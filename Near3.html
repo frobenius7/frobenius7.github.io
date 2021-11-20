@@ -104,7 +104,6 @@ nearApi.nearInitPromise = connect()
       document.getElementById('send-greeting').addEventListener('click', () => {
       if (window.walletConnection.isSignedIn()) {
         callHello();
-        start();
       }
     });
 
@@ -117,33 +116,7 @@ nearApi.nearInitPromise = connect()
     });
 
         
-    
-  // initialize 2D a (c)
-	// initialize game state (s)
-	// initialize keys states (u,r,d,l for directions, k for all the keyboard)
-	var c = canvas.getContext`2d`, k = [u = r = d = l = s = 0];
-	canvas.width = innerWidth;
-	canvas.height = innerHeight/2;
-// (initialize your global variables here)
-c.w = innerWidth;
-c.h = innerHeight;
-// update u,l,d,r globals when an arrow key/wasd/zqsd is pressed or released
 
-// DRAW LOOP
-let reqAnimationId;
-function smoothAnimation(e) {
-    // animtion
-	  canvas.width = innerWidth, canvas.height = innerHeight/2;
-	  c.w=canvas.width, c.h = canvas.height;
-    blue.x= c.w/2-(blue.w / 18 * 2)/2;
-    blue.y = c.h*.05;
-    animate();
-    reqAnimationId = requestAnimationFrame(smoothAnimation)
-}
-// to start
-function start() {
-   
-}
 
 
 
