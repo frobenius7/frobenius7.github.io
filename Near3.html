@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+		<head><meta charset="utf-8" />
+            <script src="https://cdn.jsdelivr.net/npm/near-api-js/dist/near-api-js.min.js"></script>
+            </script>
+            <style>
+            </style>
+      </head> 
+		<body style="margin:0;overflow: hidden;">
+            <div class="container">
+                <div class="sign-in" style="display: none;">
+                  <h1>hello =)</h1>
+                  <h2>Sign in with NEAR wlllet to contiune</h2>
+                  <button class="sign-in btn" style="background-color: #0072CE;">Sign In</button>
+                </div>
+            
+                <div class="after-sign-in" style="display: none;">
+                  <h1>Please enter your name</h1>
+                  <textarea id="text" placeholder="Name"></textarea><br>
+                  <button id="send-greeting">Send Greeting</button>
+                  <button class="sign-out btn" style="background-color: #0072CE;">Sign Out</button>
+                  <h2 id="response">Please wait for response</h2>
+                  <canvas id=canvas>   
+                  </canvas>
+                </div>
+              </div>
+	</body>
+</html>
+<script>
+var CONTRACT_NAME='nearvember.testnet';
+
+async function connect() {
+    let near = await nearApi.connect({
+    nodeUrl: "https://rpc.testnet.near.org",
+    walletUrl: "https://wallet.testnet.near.org",
+    helperUrl: "https://helper.testnet.near.org",
+    explorerUrl: "https://explorer.testnet.near.org",
+    networkId: 'testnet',
+    keyStore: new window.nearApi.keyStores.BrowserLocalStorageKeyStore(window.localStorage, 'crystal')
+    });
+
+    window.walletConnection = new nearApi.WalletConnection(near);
+    let account;
+    if (window.walletConnection.isSignedIn()) {
+        // Logged in account, can write as user signed up through wallet
+        account = walletConnection.account();
+        // connect to a NEAR smart contract
+        window.contract = new nearApi.Contract(account, CONTRACT_NAME, {
+          viewMethods: [],
+          changeMethods: ['set_name']
+        });
+    } else {
+        // Contract account, normally only gonna work in read only mode
+        account = new nearApi.Account(near.connection, CONTRACT_NAME);
+        //console.log(account);
+    }
+}
+
+// Log in user using NEAR Wallet on "Sign In" button click
+document.querySelector('.sign-in').addEventListener('click', () => {
+  window.walletConnection.requestSignIn(CONTRACT_NAME, 'Nearvember');
+});
+
+
+// async function to call contract
+async function callHello(){
+    // call the contract
+    let contract = await window.contract.set_name({
+          args: { name: document.getElementById('text').value }
+        })
+    // //testing code
+    // let contract = "test";
+
+    // clear the form
+    document.getElementById('text'),innerHTML="";
+    // Output from contract
+    document.getElementById('response').innerHTML=contract;
+    return contract;
+}
+
+// switch between logged in/out
+function updateUI() {
+  // console.log("Update UI");
+    if (!window.walletConnection.getAccountId()) {
+    Array.from(document.querySelectorAll('.sign-in')).map(it => it.style = 'display: block;margin-left: 10%;margin-top: 10%;');
+  }else {
+    Array.from(document.querySelectorAll('.after-sign-in')).map(it => it.style = 'display: block;');
+    var userName = window.walletConnection.getAccountId();
+    userName = userName.slice(0,userName.lastIndexOf('.'));
+    ifLoggedIn();
+  }
+}
+
+nearApi.nearInitPromise = connect()
+  .then(updateUI)
+  .catch(console.error);
+ 
+	// Things I want to do if logged in
+	function ifLoggedIn(){
+      var userName = window.walletConnection.getAccountId();
+      userName = userName.slice(0,userName.lastIndexOf('.'));
+      console.log("logged In!!")
+
+      document.getElementById('send-greeting').addEventListener('click', () => {
+      if (window.walletConnection.isSignedIn()) {
+        callHello();
+        start();
+      }
+    });
+
+    //Logout
+    document.querySelector('.sign-out').addEventListener('click', () => {
+      if (window.walletConnection.isSignedIn()) {
+        window.walletConnection.signOut();
+        updateUI();
+      }
+    });
+
+        
+    
+  // initialize 2D a (c)
+	// initialize game state (s)
+	// initialize keys states (u,r,d,l for directions, k for all the keyboard)
+	var c = canvas.getContext`2d`, k = [u = r = d = l = s = 0];
+	canvas.width = innerWidth;
+	canvas.height = innerHeight/2;
+// (initialize your global variables here)
+c.w = innerWidth;
+c.h = innerHeight;
+// update u,l,d,r globals when an arrow key/wasd/zqsd is pressed or released
+
+// DRAW LOOP
+let reqAnimationId;
+function smoothAnimation(e) {
+    // animtion
+	  canvas.width = innerWidth, canvas.height = innerHeight/2;
+	  c.w=canvas.width, c.h = canvas.height;
+    blue.x= c.w/2-(blue.w / 18 * 2)/2;
+    blue.y = c.h*.05;
+    animate();
+    reqAnimationId = requestAnimationFrame(smoothAnimation)
+}
+// to start
+function start() {
+   
+}
+
+
+
+
+
+
+</script>
