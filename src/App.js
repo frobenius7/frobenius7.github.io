@@ -12,15 +12,37 @@ const BOATLOAD_OF_GAS = Big(3).times(10 ** 13).toFixed();
 const App = ({ contract, currentUser, nearConfig, wallet }) => {
   const [messages, setMessages] = useState([]);
 
+  const [hadMsg, setHadMsg] = useState(false)
+
+  const checkMsg = () => {
+    if (!currentUser) { return;}
+    contract.getAllMessages().then(allMessages => {
+      for(let i = 0; i < allMessages.length; i++) {
+        if (allMessages[i].sender === currentUser.accountId) {
+          setHadMsg(true);
+          break;
+        }
+      } 
+    })
+  }
+ 
+
   useEffect(() => {
     // TODO: don't just fetch once; subscribe!
     contract.getMessages().then(setMessages);
+
+    checkMsg();
   }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
 
     const { fieldset, message, donation } = e.target.elements;
+
+    if (hadMsg) {
+      return;
+    }
+
 
     fieldset.disabled = true;
 
@@ -64,7 +86,7 @@ const App = ({ contract, currentUser, nearConfig, wallet }) => {
         }
       </header>
       { currentUser
-        ? <Form onSubmit={onSubmit} currentUser={currentUser} />
+        ? <Form onSubmit={onSubmit} currentUser={currentUser} hadMsg={hadMsg}/>
         : <SignIn/>
       }
       { !!currentUser && !!messages.length && <Messages messages={messages}/> }
