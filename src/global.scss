@@ -3,7 +3,7 @@
 }
 
 html {
-  --bg: #fff;
+  --bg: #EEE;
   --fg: #25282A;
   --gray: #888;
   --royal: #0072CE;
@@ -119,4 +119,6 @@ button {
   border-left: 0.25em solid var(--secondary);
   padding-left: 0.25em;
   margin-left: -0.5em;
+  font-style: oblique;
+  background-color: #58ff60;
 }
